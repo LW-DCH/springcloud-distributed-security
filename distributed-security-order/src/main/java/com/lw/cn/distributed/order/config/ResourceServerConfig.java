@@ -35,9 +35,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         resources
                 //这个资源服务的ID，这个属性是可选的，但是推荐设置并在授权服务中进行验证。 其他的拓展属性例如 tokenExtractor 令牌提取器用来提取请求中的令牌
                 .resourceId(RESOURCE_ID)
-                //ResourceServerTokenServices 类的实例，用来实现令牌服务
-                //.tokenStore(tokenStore)
-                .tokenServices(tokenService())
+
+                .tokenStore(tokenStore)
+                //.tokenServices(tokenService())//验证令牌服务
                 .stateless(true);
     }
 
@@ -61,13 +61,13 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     /**
      * 资源服务令牌解析服务
      */
-    @Bean
-    public ResourceServerTokenServices tokenService() {
-        //使用远程服务请求授权服务器校验token,必须指定校验token 的url、client_id，client_secret
-        RemoteTokenServices service = new RemoteTokenServices();
-        service.setCheckTokenEndpointUrl("http://localhost:53020/uaa/oauth/check_token");
-        service.setClientId("c1");
-        service.setClientSecret("secret");
-        return service;
-    }
+    //@Bean
+    //public ResourceServerTokenServices tokenService() {
+    //    //使用远程服务请求授权服务器校验token,必须指定校验token 的url、client_id，client_secret
+    //    RemoteTokenServices service = new RemoteTokenServices();
+    //    service.setCheckTokenEndpointUrl("http://localhost:53020/uaa/oauth/check_token");
+    //    service.setClientId("c1");
+    //    service.setClientSecret("secret");
+    //    return service;
+    //}
 }

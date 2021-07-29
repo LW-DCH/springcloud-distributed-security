@@ -1,6 +1,7 @@
 package com.lw.cn.distributed.uaa.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,7 +17,11 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+
+import java.util.Arrays;
 
 /**
  * @author:刘伟
@@ -38,6 +43,10 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    //@Qualifier("JwtAccessTokenConverter1")
+    @Autowired
+    private JwtAccessTokenConverter accessTokenConverter;
 
 
     /**
@@ -93,6 +102,12 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         defaultTokenServices.setClientDetailsService(clientDetailsService);//客户端信息服务
         defaultTokenServices.setSupportRefreshToken(true);//是否产生刷新令牌
         defaultTokenServices.setTokenStore(tokenStore);//令牌存储策略
+
+        //令牌增强
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(accessTokenConverter));
+        defaultTokenServices.setTokenEnhancer(tokenEnhancerChain);
+
         defaultTokenServices.setAccessTokenValiditySeconds(7200);//令牌默认有效期 2小时
         defaultTokenServices.setRefreshTokenValiditySeconds(259200);//刷新令牌默认有效期 3天
         return defaultTokenServices;

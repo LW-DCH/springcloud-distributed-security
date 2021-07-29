@@ -16,7 +16,6 @@ public class TokenConfig {
     private String SIGNING_KEY = "uaa123";
     @Bean
     public TokenStore tokenStore() {
-        //return new InMemoryTokenStore();
         return new JwtTokenStore(accessTokenConverter());
     }
     @Bean
